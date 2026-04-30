@@ -468,7 +468,7 @@ DEF CYAN_BOT Robot {
     }
     Transform {
       translation 0.39 0.32 0
-      rotation 0 0 1 0.03
+      rotation 0 0 1 -0.03
       children [
         Shape {
           appearance USE SmallBotBumper
@@ -480,7 +480,7 @@ DEF CYAN_BOT Robot {
     }
     Transform {
       translation 0.39 -0.32 0
-      rotation 0 0 1 -0.03
+      rotation 0 0 1 0.03
       children [
         Shape {
           appearance USE SmallBotBumper
@@ -527,7 +527,7 @@ DEF CYAN_BOT Robot {
       }
       Transform {
         translation 0.39 0.32 0
-        rotation 0 0 1 0.03
+        rotation 0 0 1 -0.03
         children [
           Box {
             size 0.36 0.055 0.39
@@ -536,7 +536,7 @@ DEF CYAN_BOT Robot {
       }
       Transform {
         translation 0.39 -0.32 0
-        rotation 0 0 1 -0.03
+        rotation 0 0 1 0.03
         children [
           Box {
             size 0.36 0.055 0.39
@@ -580,7 +580,7 @@ DEF YELLOW_BOT Robot {
     }
     Transform {
       translation 0.39 0.32 0
-      rotation 0 0 1 0.03
+      rotation 0 0 1 -0.03
       children [
         Shape {
           appearance USE SmallBotBumper
@@ -592,7 +592,7 @@ DEF YELLOW_BOT Robot {
     }
     Transform {
       translation 0.39 -0.32 0
-      rotation 0 0 1 -0.03
+      rotation 0 0 1 0.03
       children [
         Shape {
           appearance USE SmallBotBumper
@@ -639,7 +639,7 @@ DEF YELLOW_BOT Robot {
       }
       Transform {
         translation 0.39 0.32 0
-        rotation 0 0 1 0.03
+        rotation 0 0 1 -0.03
         children [
           Box {
             size 0.36 0.055 0.39
@@ -648,7 +648,7 @@ DEF YELLOW_BOT Robot {
       }
       Transform {
         translation 0.39 -0.32 0
-        rotation 0 0 1 -0.03
+        rotation 0 0 1 0.03
         children [
           Box {
             size 0.36 0.055 0.39
@@ -692,7 +692,7 @@ DEF MAGENTA_BOT Robot {
     }
     Transform {
       translation 0.39 0.32 0
-      rotation 0 0 1 0.03
+      rotation 0 0 1 -0.03
       children [
         Shape {
           appearance USE SmallBotBumper
@@ -704,7 +704,7 @@ DEF MAGENTA_BOT Robot {
     }
     Transform {
       translation 0.39 -0.32 0
-      rotation 0 0 1 -0.03
+      rotation 0 0 1 0.03
       children [
         Shape {
           appearance USE SmallBotBumper
@@ -751,7 +751,7 @@ DEF MAGENTA_BOT Robot {
       }
       Transform {
         translation 0.39 0.32 0
-        rotation 0 0 1 0.03
+        rotation 0 0 1 -0.03
         children [
           Box {
             size 0.36 0.055 0.39
@@ -760,7 +760,7 @@ DEF MAGENTA_BOT Robot {
       }
       Transform {
         translation 0.39 -0.32 0
-        rotation 0 0 1 -0.03
+        rotation 0 0 1 0.03
         children [
           Box {
             size 0.36 0.055 0.39
