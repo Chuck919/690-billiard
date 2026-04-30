@@ -13,13 +13,21 @@ from controller import Supervisor
 ROBOT_Z = 0.34
 TIME_LIMIT = 595.0
 
-APPROACH_OFFSET = 1.05
+APPROACH_OFFSET = 1.22
 CONTACT_OFFSET = 0.78
-PUSH_FINISH_OFFSET = 0.52
+PUSH_FINISH_OFFSET = 0.28
 
-MAX_SPEED = 0.82
-MAX_PUSH_SPEED = 0.42
-MAX_TURN = 2.7
+MAX_SPEED = 3.0
+MAX_PUSH_SPEED = 2.05
+MAX_TURN = 6.5
+PEER_YIELD_DISTANCE = 0.62
+PUSH_START_DISTANCE = 0.96
+PURPLE_CLEARANCE = 1.22
+BALL_CLEARANCE = 0.98
+PEER_CLEARANCE = 1.04
+HARD_PURPLE_CLEARANCE = 0.94
+HARD_BALL_CLEARANCE = 0.78
+HARD_PEER_CLEARANCE = 0.86
 
 ARENA_X_MIN = -6.55
 ARENA_X_MAX = 2.55
@@ -60,7 +68,7 @@ ASSIGNMENTS = {
         "pocket_name": "green",
         "launch": (1.25, -1.12),
         "priority": 2,
-        "start_delay": 2.0,
+        "start_delay": 0.25,
         "side_bias": 1.0,
     },
     "magenta_bot": {
@@ -69,7 +77,7 @@ ASSIGNMENTS = {
         "pocket_name": "red",
         "launch": (0.65, -2.35),
         "priority": 3,
-        "start_delay": 4.0,
+        "start_delay": 0.5,
         "side_bias": -1.0,
     },
 }
@@ -167,6 +175,21 @@ def point_segment_distance(point, start, end):
     return distance(point, closest), t
 
 
+def point_path_clearance(point, start, end):
+    sx, sy = start
+    ex, ey = end
+    px, py = point
+    vx = ex - sx
+    vy = ey - sy
+    length_sq = vx * vx + vy * vy
+    if length_sq < 1e-9:
+        return distance(point, start), 0.0
+    raw_t = ((px - sx) * vx + (py - sy) * vy) / length_sq
+    t = clamp(raw_t, 0.0, 1.0)
+    closest = (sx + t * vx, sy + t * vy)
+    return distance(point, closest), raw_t
+
+
 def pocketed_at(ball_name, pocket):
     position = balls[ball_name].getPosition()
     xy = (position[0], position[1])
@@ -257,6 +280,19 @@ def set_motion(forward_speed, yaw_rate):
     self_node.setVelocity([vx, vy, 0.0, 0.0, 0.0, yaw_rate])
 
 
+def set_vector_motion(vector, speed, yaw_rate=0.0):
+    length = math.hypot(vector[0], vector[1])
+    if length < 1e-6:
+        set_motion(0.0, yaw_rate)
+        return
+
+    speed = clamp(speed, -MAX_SPEED, MAX_SPEED)
+    yaw_rate = clamp(yaw_rate, -MAX_TURN, MAX_TURN)
+    vx = vector[0] / length * speed
+    vy = vector[1] / length * speed
+    self_node.setVelocity([vx, vy, 0.0, 0.0, 0.0, yaw_rate])
+
+
 def stop_robot(steps=3):
     for _ in range(steps):
         self_node.setVelocity([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
@@ -334,21 +370,21 @@ def avoidance_vector(base_vector, goal, skip_ball=None):
 
     purple = ball_xy("purple")
     if not in_any_pocket("purple"):
-        vector = add_repulsion(vector, purple, 2.05, 5.2)
-        vector = line_avoidance(vector, goal, purple, 1.18, 4.5)
+        vector = add_repulsion(vector, purple, 2.75, 9.5)
+        vector = line_avoidance(vector, goal, purple, 1.7, 8.0)
 
     for ball_name in ("yellow", "cyan", "magenta"):
         if ball_name == skip_ball or in_any_pocket(ball_name):
             continue
         position = ball_xy(ball_name)
-        vector = add_repulsion(vector, position, 1.03, 1.4)
-        vector = line_avoidance(vector, goal, position, 0.78, 1.0)
+        vector = add_repulsion(vector, position, 1.35, 2.8)
+        vector = line_avoidance(vector, goal, position, 1.1, 2.2)
 
     for peer_name, position in peer_positions():
         peer_priority = ASSIGNMENTS[peer_name]["priority"]
-        strength = 3.2 if role["priority"] > peer_priority else 1.9
-        vector = add_repulsion(vector, position, 1.25, strength)
-        vector = line_avoidance(vector, goal, position, 0.88, 1.7)
+        strength = 4.2 if role["priority"] > peer_priority else 2.4
+        vector = add_repulsion(vector, position, 1.45, strength)
+        vector = line_avoidance(vector, goal, position, 1.05, 2.4)
 
     return vector
 
@@ -356,7 +392,7 @@ def avoidance_vector(base_vector, goal, skip_ball=None):
 def should_yield():
     mine = robot_xy()
     for peer_name, position in peer_positions():
-        if distance(mine, position) < 0.78 and role["priority"] > ASSIGNMENTS[peer_name]["priority"]:
+        if distance(mine, position) < PEER_YIELD_DISTANCE and role["priority"] > ASSIGNMENTS[peer_name]["priority"]:
             return peer_name
     return None
 
@@ -364,18 +400,18 @@ def should_yield():
 def purple_too_close():
     if in_any_pocket("purple"):
         return False
-    return distance(robot_xy(), ball_xy("purple")) < 0.98
+    return distance(robot_xy(), ball_xy("purple")) < 1.28
 
 
 def flee_purple():
     purple = ball_xy("purple")
     mine = robot_xy()
     away = unit_from_to(purple, mine)
-    flee_goal = clamp_point(add(mine, scale(away, 1.3)), margin=0.25)
+    flee_goal = clamp_point(add(mine, scale(away, 1.8)), margin=0.25)
     debug("FLEE_PURPLE", f"goal=({flee_goal[0]:.2f},{flee_goal[1]:.2f})", force=True)
-    deadline = robot.getTime() + 1.0
+    deadline = robot.getTime() + 1.25
     while robot.getTime() < deadline and step_once():
-        drive_step(flee_goal, avoid=True, skip_ball=role["ball"], max_speed=0.55)
+        drive_step(flee_goal, avoid=True, skip_ball=role["ball"], max_speed=1.05)
     stop_robot(2)
 
 
@@ -411,24 +447,25 @@ def drive_step(goal, desired_heading=None, avoid=True, skip_ball=None, max_speed
         nav_heading = robot_yaw()
 
     if desired_heading is not None:
-        near_weight = 0.0 if dist > 1.0 else (1.0 - dist) / 1.0
-        nav_heading = blend_angles(nav_heading, desired_heading, max(heading_bias, near_weight))
+        align_window = 1.0 + heading_bias
+        near_weight = clamp((align_window - dist) / align_window, 0.0, 1.0)
+        nav_heading = blend_angles(nav_heading, desired_heading, near_weight)
 
     heading_error = wrap_angle(nav_heading - robot_yaw())
-    turn = clamp(3.3 * heading_error, -MAX_TURN, MAX_TURN)
+    turn = clamp(4.8 * heading_error, -MAX_TURN, MAX_TURN)
 
-    speed = min(max_speed, 0.18 + 0.55 * dist)
-    if abs(heading_error) > 1.35:
+    speed = min(max_speed, 0.38 + 1.75 * dist)
+    if abs(heading_error) > 1.55:
         speed = 0.0
     else:
-        speed *= max(0.18, math.cos(heading_error))
-    if dist < 0.55:
-        speed *= max(0.25, dist / 0.55)
+        speed *= max(0.32, math.cos(heading_error))
+    if dist < 0.24:
+        speed *= max(0.5, dist / 0.24)
 
     if not in_any_pocket("purple"):
         purple_d = distance(position, ball_xy("purple"))
-        if purple_d < 1.35:
-            speed *= 0.35
+        if purple_d < 1.15:
+            speed *= 0.55
 
     set_motion(speed, turn)
     return dist, abs(heading_error)
@@ -470,7 +507,7 @@ def drive_to(goal, state, tolerance=0.24, timeout=18.0, desired_heading=None, av
             stop_robot(3)
             return True
 
-        if robot.getTime() - best_time > 3.2 and dist > tolerance + 0.12:
+        if robot.getTime() - best_time > 1.8 and dist > tolerance + 0.12:
             rescue_from_stall(goal)
             best_time = robot.getTime()
 
@@ -479,7 +516,7 @@ def drive_to(goal, state, tolerance=0.24, timeout=18.0, desired_heading=None, av
     return False
 
 
-def turn_to(heading, timeout=3.2, tolerance=0.13):
+def turn_to(heading, timeout=1.6, tolerance=0.16):
     deadline = robot.getTime() + timeout
     debug("TURN", f"heading={heading:.2f}", force=True)
     while robot.getTime() < deadline and step_once():
@@ -487,41 +524,102 @@ def turn_to(heading, timeout=3.2, tolerance=0.13):
         if abs(error) < tolerance:
             stop_robot(3)
             return True
-        set_motion(0.0, clamp(3.4 * error, -MAX_TURN, MAX_TURN))
+        set_motion(0.0, clamp(5.4 * error, -MAX_TURN, MAX_TURN))
     stop_robot(3)
     return False
 
 
-def purple_blocks_shot(ball, pocket):
-    if in_any_pocket("purple"):
-        return False, 0.0
-    clearance, along = point_segment_distance(ball_xy("purple"), ball, pocket)
-    return 0.02 < along < 0.98 and clearance < 1.05, clearance
+def shot_lane_blockers(
+    start,
+    end,
+    purple_clearance=PURPLE_CLEARANCE,
+    ball_clearance=BALL_CLEARANCE,
+    peer_clearance=PEER_CLEARANCE,
+):
+    blockers = []
+
+    for ball_name in ("purple", "yellow", "cyan", "magenta"):
+        if ball_name == role["ball"] or in_any_pocket(ball_name):
+            continue
+        position = ball_xy(ball_name)
+        clearance, along = point_path_clearance(position, start, end)
+        limit = purple_clearance if ball_name == "purple" else ball_clearance
+        start_limit = limit * (0.78 if ball_name != "purple" else 0.92)
+        blocks_start = -0.08 < along < 0.08 and clearance < start_limit
+        blocks_lane = 0.08 <= along < 0.98 and clearance < limit
+        if blocks_start or blocks_lane:
+            blockers.append((ball_name, position, clearance, along, limit))
+
+    for peer_name, position in peer_positions():
+        clearance, along = point_path_clearance(position, start, end)
+        limit = peer_clearance
+        if 0.0 < along < 0.98 and clearance < limit:
+            blockers.append((peer_name, position, clearance, along, limit))
+
+    return blockers
+
+
+def shot_lane_blocker(
+    start,
+    end,
+    purple_clearance=PURPLE_CLEARANCE,
+    ball_clearance=BALL_CLEARANCE,
+    peer_clearance=PEER_CLEARANCE,
+):
+    best = None
+    for candidate in shot_lane_blockers(start, end, purple_clearance, ball_clearance, peer_clearance):
+        if best is None or candidate[3] < best[3]:
+            best = candidate
+
+    return best
+
+
+def hard_shot_lane_blocker(start, end):
+    return shot_lane_blocker(start, end, HARD_PURPLE_CLEARANCE, HARD_BALL_CLEARANCE, HARD_PEER_CLEARANCE)
+
+
+def blocker_cost(blockers):
+    cost = 0.0
+    for name, _, clearance, along, limit in blockers:
+        shortage = max(0.0, limit - clearance)
+        weight = 42.0 if name == "purple" else 24.0 if name in BALL_DEFS else 16.0
+        near_weight = 1.25 - 0.45 * clamp(along, 0.0, 1.0)
+        cost += weight * near_weight * (0.2 + shortage + shortage * shortage)
+    return cost
 
 
 def aim_point(ball, pocket):
-    blocked, clearance = purple_blocks_shot(ball, pocket)
-    if not blocked:
-        return pocket, False
-
     direction = unit_from_to(ball, pocket)
     normal = perp(direction)
-    purple = ball_xy("purple")
-    cross = direction[0] * (purple[1] - ball[1]) - direction[1] * (purple[0] - ball[0])
-    side = -1.0 if cross > 0.0 else 1.0
-    if abs(cross) < 1e-6:
-        side = role["side_bias"]
 
-    offset = 1.25 + (1.05 - clearance)
-    return clamp_point(add(pocket, scale(normal, side * offset)), margin=0.25), True
+    candidates = [(pocket, 0.0)]
+    for offset in (1.15, 1.65, 2.2, 2.8):
+        candidates.append((clamp_point(add(pocket, scale(normal, role["side_bias"] * offset)), margin=0.25), offset))
+        candidates.append((clamp_point(add(pocket, scale(normal, -role["side_bias"] * offset)), margin=0.25), offset))
+
+    best_aim = pocket
+    best_cost = float("inf")
+    direct_blocked = shot_lane_blocker(ball, pocket) is not None
+
+    for candidate, offset in candidates:
+        blockers = shot_lane_blockers(ball, candidate)
+        cost = blocker_cost(blockers) + distance(candidate, pocket) * 0.55 + offset * 0.35
+        if blockers:
+            cost += 3.0
+        if cost < best_cost:
+            best_cost = cost
+            best_aim = candidate
+
+    return best_aim, direct_blocked or distance(best_aim, pocket) > 0.2
 
 
 def stage_candidates(ball, direction):
     base = add(ball, scale(direction, -APPROACH_OFFSET))
     normal = perp(direction)
     candidates = []
-    for lateral in (0.0, 0.32, -0.32, 0.62, -0.62):
-        candidates.append(clamp_point(add(base, scale(normal, lateral)), margin=0.22))
+    for lateral in (0.0, 0.28, -0.28, 0.56, -0.56, 0.84, -0.84, 1.12, -1.12):
+        point = clamp_point(add(base, scale(normal, lateral)), margin=0.22)
+        candidates.append((point, abs(lateral)))
     return candidates
 
 
@@ -530,20 +628,20 @@ def obstacle_cost(point):
     purple = ball_xy("purple")
     if not in_any_pocket("purple"):
         d = distance(point, purple)
-        if d < 1.45:
-            cost += (1.45 - d) * 12.0
+        if d < 2.05:
+            cost += (2.05 - d) * 22.0
 
     for peer_name, position in peer_positions():
         d = distance(point, position)
-        if d < 1.0:
-            cost += (1.0 - d) * 7.0
+        if d < 1.35:
+            cost += (1.35 - d) * 10.0
 
     for ball_name in ("yellow", "cyan", "magenta"):
         if ball_name == role["ball"] or in_any_pocket(ball_name):
             continue
         d = distance(point, ball_xy(ball_name))
-        if d < 0.9:
-            cost += (0.9 - d) * 4.0
+        if d < 1.25:
+            cost += (1.25 - d) * 8.0
 
     return cost
 
@@ -557,8 +655,8 @@ def shot_geometry():
 
     best_stage = None
     best_cost = float("inf")
-    for candidate in stage_candidates(owned_ball, direction):
-        cost = distance(robot_xy(), candidate) + obstacle_cost(candidate)
+    for candidate, lateral in stage_candidates(owned_ball, direction):
+        cost = distance(robot_xy(), candidate) + obstacle_cost(candidate) + lateral * 2.4
         if cost < best_cost:
             best_cost = cost
             best_stage = candidate
@@ -566,6 +664,25 @@ def shot_geometry():
     contact = clamp_point(add(owned_ball, scale(direction, -CONTACT_OFFSET)), margin=0.18)
     push_goal = clamp_point(add(aim, scale(direction, -PUSH_FINISH_OFFSET)), margin=0.15)
     return owned_ball, pocket, aim, detour, direction, heading, best_stage, contact, push_goal
+
+
+def clear_blocked_lane(blocker_name, blocker_position, direction):
+    mine = robot_xy()
+    normal = perp(direction)
+    away = (mine[0] - blocker_position[0], mine[1] - blocker_position[1])
+    side = 1.0 if away[0] * normal[0] + away[1] * normal[1] >= 0.0 else -1.0
+    if abs(away[0] * normal[0] + away[1] * normal[1]) < 1e-5:
+        side = role["side_bias"]
+
+    clear_goal = clamp_point(
+        add(add(mine, scale(normal, side * 0.85)), scale(direction, -0.3)),
+        margin=0.25,
+    )
+    debug("CLEAR_PATH", f"{blocker_name} goal=({clear_goal[0]:.2f},{clear_goal[1]:.2f})", force=True)
+    deadline = robot.getTime() + 0.65
+    while robot.getTime() < deadline and step_once():
+        drive_step(clear_goal, avoid=True, skip_ball=role["ball"], max_speed=1.0)
+    stop_robot(2)
 
 
 def assigned_ball_in_bad_state():
@@ -593,17 +710,15 @@ def push_assigned_ball():
         drive_to(
             stage,
             "APPROACH",
-            tolerance=0.23,
-            timeout=17.0,
-            desired_heading=heading,
+            tolerance=0.34,
+            timeout=7.0,
             avoid=True,
-            skip_ball=role["ball"],
-            max_speed=0.72,
-            heading_bias=0.35,
+            skip_ball=None,
+            max_speed=1.95,
         )
         turn_to(heading)
 
-        push_deadline = robot.getTime() + 13.5
+        push_deadline = robot.getTime() + 7.5
         last_ball = ball_xy(role["ball"])
         last_ball_move = robot.getTime()
 
@@ -629,38 +744,45 @@ def push_assigned_ball():
             ball, pocket, aim, detour, direction, heading, stage, contact, push_goal = shot_geometry()
             robot_to_contact = distance(robot_xy(), contact)
             angle_error = abs(wrap_angle(heading - robot_yaw()))
+            blocker = hard_shot_lane_blocker(ball, aim)
 
-            if robot_to_contact > 0.42 or angle_error > 0.48:
-                drive_step(
-                    contact,
-                    desired_heading=heading,
-                    avoid=True,
-                    skip_ball=role["ball"],
-                    max_speed=0.38,
-                    heading_bias=0.55,
-                )
+            if robot_to_contact > PUSH_START_DISTANCE:
+                to_contact = unit_from_to(robot_xy(), contact)
+                yaw_error = wrap_angle(heading - robot_yaw())
+                set_vector_motion(to_contact, 1.65, 5.2 * yaw_error)
                 debug("REACQUIRE", f"contact={robot_to_contact:.2f} angle={angle_error:.2f}")
+            elif angle_error > 0.42:
+                error = wrap_angle(heading - robot_yaw())
+                set_motion(0.0, clamp(5.8 * error, -MAX_TURN, MAX_TURN))
+                debug("AIM", f"contact={robot_to_contact:.2f} angle={angle_error:.2f}")
+            elif blocker is not None:
+                name, position, clearance, along, _ = blocker
+                debug("LANE_BLOCKED", f"{name} clearance={clearance:.2f} along={along:.2f}", force=True)
+                if name in BOT_DEFS:
+                    yield_to_peer(name)
+                else:
+                    clear_blocked_lane(name, position, direction)
+                break
             else:
-                drive_step(
-                    push_goal,
-                    desired_heading=heading,
-                    avoid=True,
-                    skip_ball=role["ball"],
-                    max_speed=MAX_PUSH_SPEED,
-                    heading_bias=0.92,
-                )
+                yaw_error = wrap_angle(heading - robot_yaw())
+                push_speed = MAX_PUSH_SPEED if distance(ball, pocket) > 1.0 else 1.25
+                set_vector_motion(direction, push_speed, 4.6 * yaw_error)
                 debug("PUSH", f"pocket_d={distance(ball, pocket):.2f} detour={detour}")
 
             current_ball = ball_xy(role["ball"])
-            if distance(current_ball, last_ball) > 0.08:
+            engaged = robot_to_contact < PUSH_START_DISTANCE and angle_error < 0.5
+            if not engaged:
                 last_ball = current_ball
                 last_ball_move = robot.getTime()
-            elif robot.getTime() - last_ball_move > 4.5:
+            elif distance(current_ball, last_ball) > 0.08:
+                last_ball = current_ball
+                last_ball_move = robot.getTime()
+            elif robot.getTime() - last_ball_move > 2.0:
                 debug("BALL_STALLED", "backing up for another approach", force=True)
                 break
 
         stop_robot(3)
-        timed_motion(-0.24, role["side_bias"] * 1.4, 0.65)
+        timed_motion(-0.45, role["side_bias"] * 2.2, 0.35)
 
         if attempts >= 10:
             debug("REPLAN_LONG", "many attempts, continuing carefully", force=True)
@@ -689,11 +811,11 @@ if ready():
     drive_to(
         role["launch"],
         "LAUNCH",
-        tolerance=0.22,
-        timeout=10.0,
+        tolerance=0.38,
+        timeout=2.8,
         avoid=True,
         skip_ball=role["ball"],
-        max_speed=0.58,
+        max_speed=1.7,
     )
     push_assigned_ball()
     debug("DONE", f"scored={correct_ball_pocketed()}", force=True)

@@ -461,29 +461,31 @@ DEF CYAN_BOT Robot {
             metalness 0
           }
           geometry Box {
-            size 0.08 0.58 0.42
+            size 0.08 0.38 0.4
           }
         }
       ]
     }
     Transform {
-      translation 0.42 0.32 0
+      translation 0.39 0.32 0
+      rotation 0 0 1 0.03
       children [
         Shape {
           appearance USE SmallBotBumper
           geometry Box {
-            size 0.34 0.07 0.36
+            size 0.36 0.055 0.39
           }
         }
       ]
     }
     Transform {
-      translation 0.42 -0.32 0
+      translation 0.39 -0.32 0
+      rotation 0 0 1 -0.03
       children [
         Shape {
           appearance USE SmallBotBumper
           geometry Box {
-            size 0.34 0.07 0.36
+            size 0.36 0.055 0.39
           }
         }
       ]
@@ -519,23 +521,25 @@ DEF CYAN_BOT Robot {
         translation 0.25 0 0
         children [
           Box {
-            size 0.08 0.58 0.42
+            size 0.08 0.38 0.4
           }
         ]
       }
       Transform {
-        translation 0.42 0.32 0
+        translation 0.39 0.32 0
+        rotation 0 0 1 0.03
         children [
           Box {
-            size 0.34 0.07 0.36
+            size 0.36 0.055 0.39
           }
         ]
       }
       Transform {
-        translation 0.42 -0.32 0
+        translation 0.39 -0.32 0
+        rotation 0 0 1 -0.03
         children [
           Box {
-            size 0.34 0.07 0.36
+            size 0.36 0.055 0.39
           }
         ]
       }
@@ -569,29 +573,31 @@ DEF YELLOW_BOT Robot {
         Shape {
           appearance USE SmallBotBumper
           geometry Box {
-            size 0.08 0.58 0.42
+            size 0.08 0.38 0.4
           }
         }
       ]
     }
     Transform {
-      translation 0.42 0.32 0
+      translation 0.39 0.32 0
+      rotation 0 0 1 0.03
       children [
         Shape {
           appearance USE SmallBotBumper
           geometry Box {
-            size 0.34 0.07 0.36
+            size 0.36 0.055 0.39
           }
         }
       ]
     }
     Transform {
-      translation 0.42 -0.32 0
+      translation 0.39 -0.32 0
+      rotation 0 0 1 -0.03
       children [
         Shape {
           appearance USE SmallBotBumper
           geometry Box {
-            size 0.34 0.07 0.36
+            size 0.36 0.055 0.39
           }
         }
       ]
@@ -627,23 +633,25 @@ DEF YELLOW_BOT Robot {
         translation 0.25 0 0
         children [
           Box {
-            size 0.08 0.58 0.42
+            size 0.08 0.38 0.4
           }
         ]
       }
       Transform {
-        translation 0.42 0.32 0
+        translation 0.39 0.32 0
+        rotation 0 0 1 0.03
         children [
           Box {
-            size 0.34 0.07 0.36
+            size 0.36 0.055 0.39
           }
         ]
       }
       Transform {
-        translation 0.42 -0.32 0
+        translation 0.39 -0.32 0
+        rotation 0 0 1 -0.03
         children [
           Box {
-            size 0.34 0.07 0.36
+            size 0.36 0.055 0.39
           }
         ]
       }
@@ -677,29 +685,31 @@ DEF MAGENTA_BOT Robot {
         Shape {
           appearance USE SmallBotBumper
           geometry Box {
-            size 0.08 0.58 0.42
+            size 0.08 0.38 0.4
           }
         }
       ]
     }
     Transform {
-      translation 0.42 0.32 0
+      translation 0.39 0.32 0
+      rotation 0 0 1 0.03
       children [
         Shape {
           appearance USE SmallBotBumper
           geometry Box {
-            size 0.34 0.07 0.36
+            size 0.36 0.055 0.39
           }
         }
       ]
     }
     Transform {
-      translation 0.42 -0.32 0
+      translation 0.39 -0.32 0
+      rotation 0 0 1 -0.03
       children [
         Shape {
           appearance USE SmallBotBumper
           geometry Box {
-            size 0.34 0.07 0.36
+            size 0.36 0.055 0.39
           }
         }
       ]
@@ -735,23 +745,25 @@ DEF MAGENTA_BOT Robot {
         translation 0.25 0 0
         children [
           Box {
-            size 0.08 0.58 0.42
+            size 0.08 0.38 0.4
           }
         ]
       }
       Transform {
-        translation 0.42 0.32 0
+        translation 0.39 0.32 0
+        rotation 0 0 1 0.03
         children [
           Box {
-            size 0.34 0.07 0.36
+            size 0.36 0.055 0.39
           }
         ]
       }
       Transform {
-        translation 0.42 -0.32 0
+        translation 0.39 -0.32 0
+        rotation 0 0 1 -0.03
         children [
           Box {
-            size 0.34 0.07 0.36
+            size 0.36 0.055 0.39
           }
         ]
       }
