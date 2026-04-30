@@ -1,0 +1,794 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/balls/protos/Ball.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.5875546798463148 -0.24797836801126052 -0.7702507560458258 3.770206356137577
+  position 2.0409009034996157 -2.951506419071366 24.168173289823496
+}
+TexturedBackground {
+  texture "factory"
+  skybox FALSE
+}
+TexturedBackgroundLight {
+  texture "music_hall"
+  castShadows FALSE
+}
+Solid {
+  translation -2 6 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 8 1 0.2
+      }
+    }
+  ]
+  name "solid(1)"
+  boundingObject Box {
+    size 8 1 0.2
+  }
+}
+Solid {
+  translation -2.5 -2.5 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 7 2 0.2
+      }
+    }
+  ]
+  name "solid(2)"
+  boundingObject Box {
+    size 7 2 0.2
+  }
+}
+Solid {
+  translation -6.5 -2 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.2
+      }
+    }
+  ]
+  name "solid(4)"
+  boundingObject Box {
+    size 1 1 0.2
+  }
+}
+Solid {
+  translation 2 -2.5 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.5 0.5 0.4
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 2 2 0.2
+      }
+    }
+  ]
+  name "solid(3)"
+  boundingObject Box {
+    size 2 2 0.2
+  }
+}
+Solid {
+  translation 2.5 6 -0.2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 0 1
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.2
+      }
+    }
+  ]
+  name "solid(5)"
+  boundingObject Box {
+    size 1 1 0.2
+  }
+}
+Solid {
+  translation -6.5 6 -0.2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 1 0
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.2
+      }
+    }
+  ]
+  name "solid(6)"
+  boundingObject Box {
+    size 1 1 0.2
+  }
+}
+Solid {
+  translation -6.5 -3 -0.2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 0 0
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 1 1 0.2
+      }
+    }
+  ]
+  name "solid(7)"
+  boundingObject Box {
+    size 1 1 0.2
+  }
+}
+Solid {
+  translation -2.5 -3.55 1
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 7 0.1 2.2
+      }
+    }
+  ]
+  name "solid(8)"
+  boundingObject Box {
+    size 7 0.1 2.2
+  }
+}
+Solid {
+  translation -2 6.55 1
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 8 0.1 2.2
+      }
+    }
+  ]
+  name "solid(9)"
+  boundingObject Box {
+    size 8 0.1 2.2
+  }
+}
+Solid {
+  translation 2.5 6.55 1
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 0 1
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 1 0.1 2.2
+      }
+    }
+  ]
+  name "solid(12)"
+  boundingObject Box {
+    size 1 0.1 2.2
+  }
+}
+Solid {
+  translation -6.5 6.55 1
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 1 0
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 1 0.1 2.2
+      }
+    }
+  ]
+  name "solid(15)"
+  boundingObject Box {
+    size 1 0.1 2.2
+  }
+}
+Solid {
+  translation -6.5 -3.55 1
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 0 0
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 1 0.1 2.2
+      }
+    }
+  ]
+  name "solid(17)"
+  boundingObject Box {
+    size 1 0.1 2.2
+  }
+}
+Solid {
+  translation 3.05 6 1
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 0 1
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 1 0.1 2.2
+      }
+    }
+  ]
+  name "solid(13)"
+  boundingObject Box {
+    size 1 0.1 2.2
+  }
+}
+Solid {
+  translation 2 -3.55 0.75
+  rotation 0 0 1 -3.1415853071795863
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.5 0.5 0.4
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 2 0.1 1.7
+      }
+    }
+  ]
+  name "solid(19)"
+  boundingObject Box {
+    size 2 0.1 1.7
+  }
+}
+Solid {
+  translation 3.05 -2.5 0.75
+  rotation 0 0 -1 1.57079
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.5 0.5 0.4
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 2 0.1 1.7
+      }
+    }
+  ]
+  name "solid(18)"
+  boundingObject Box {
+    size 1 0.1 1.7
+  }
+}
+Solid {
+  translation 2 -3.55 1.85
+  rotation 0 0 1 -3.1415853071795863
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 2 0.1 0.5
+      }
+    }
+  ]
+  name "solid(20)"
+  boundingObject Box {
+    size 2 0.1 0.5
+  }
+}
+Solid {
+  translation 3.05 -2.5 1.85
+  rotation 0 0 -1 1.57079
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 2 0.1 0.5
+      }
+    }
+  ]
+  name "solid(21)"
+  boundingObject Box {
+    size 2 0.1 0.5
+  }
+}
+Solid {
+  translation -7.05 6 1
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 1 0
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 1 0.1 2.2
+      }
+    }
+  ]
+  name "solid(14)"
+  boundingObject Box {
+    size 1 0.1 2.2
+  }
+}
+Solid {
+  translation -7.05 -3 1
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 0 0
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 1 0.1 2.2
+      }
+    }
+  ]
+  name "solid(16)"
+  boundingObject Box {
+    size 1 0.1 2.2
+  }
+}
+Solid {
+  translation -7.05 1.5 1
+  rotation 0 0 1 -1.5707953071795862
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 8 0.1 2.2
+      }
+    }
+  ]
+  name "solid(10)"
+  boundingObject Box {
+    size 8 0.1 2.2
+  }
+}
+Solid {
+  translation 3.05 2 1
+  rotation 0 0 1 -1.5707953071795862
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 7 0.1 2.2
+      }
+    }
+  ]
+  name "solid(11)"
+  boundingObject Box {
+    size 7 0.1 2.2
+  }
+}
+Solid {
+  translation -2.01 2 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0
+      }
+      geometry DEF Floor1 Box {
+        size 10 7 0.2
+      }
+    }
+  ]
+  boundingObject USE Floor1
+}
+DEF CYAN_BOT Robot {
+  translation 2.35 -2.85 0.34
+  rotation 0 0 1 1.5708
+  children [
+    Transform {
+      translation -0.05 0 0
+      children [
+        Shape {
+          appearance DEF SmallBotBody PBRAppearance {
+            baseColor 0.04 0.11 0.16
+            roughness 0.55
+            metalness 0
+          }
+          geometry Box {
+            size 0.38 0.32 0.3
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0.25 0 0
+      children [
+        Shape {
+          appearance DEF SmallBotBumper PBRAppearance {
+            baseColor 0.02 0.02 0.025
+            roughness 0.9
+            metalness 0
+          }
+          geometry Box {
+            size 0.08 0.58 0.42
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0.42 0.32 0
+      children [
+        Shape {
+          appearance USE SmallBotBumper
+          geometry Box {
+            size 0.34 0.07 0.36
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0.42 -0.32 0
+      children [
+        Shape {
+          appearance USE SmallBotBumper
+          geometry Box {
+            size 0.34 0.07 0.36
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0 0 0.24
+      children [
+        Shape {
+          appearance DEF CyanBeacon PBRAppearance {
+            baseColor 0 1 1
+            roughness 0.4
+            metalness 0
+          }
+          geometry Box {
+            size 0.16 0.16 0.08
+          }
+        }
+      ]
+    }
+  ]
+  name "cyan_bot"
+  boundingObject Group {
+    children [
+      Transform {
+        translation -0.05 0 0
+        children [
+          Box {
+            size 0.38 0.32 0.3
+          }
+        ]
+      }
+      Transform {
+        translation 0.25 0 0
+        children [
+          Box {
+            size 0.08 0.58 0.42
+          }
+        ]
+      }
+      Transform {
+        translation 0.42 0.32 0
+        children [
+          Box {
+            size 0.34 0.07 0.36
+          }
+        ]
+      }
+      Transform {
+        translation 0.42 -0.32 0
+        children [
+          Box {
+            size 0.34 0.07 0.36
+          }
+        ]
+      }
+    ]
+  }
+  physics Physics {
+    density -1
+    mass 55
+  }
+  controller "billiard_bot"
+  supervisor TRUE
+}
+DEF YELLOW_BOT Robot {
+  translation 1.37 -2.85 0.34
+  rotation 0 0 1 1.5708
+  children [
+    Transform {
+      translation -0.05 0 0
+      children [
+        Shape {
+          appearance USE SmallBotBody
+          geometry Box {
+            size 0.38 0.32 0.3
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0.25 0 0
+      children [
+        Shape {
+          appearance USE SmallBotBumper
+          geometry Box {
+            size 0.08 0.58 0.42
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0.42 0.32 0
+      children [
+        Shape {
+          appearance USE SmallBotBumper
+          geometry Box {
+            size 0.34 0.07 0.36
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0.42 -0.32 0
+      children [
+        Shape {
+          appearance USE SmallBotBumper
+          geometry Box {
+            size 0.34 0.07 0.36
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0 0 0.24
+      children [
+        Shape {
+          appearance DEF YellowBeacon PBRAppearance {
+            baseColor 1 1 0
+            roughness 0.4
+            metalness 0
+          }
+          geometry Box {
+            size 0.16 0.16 0.08
+          }
+        }
+      ]
+    }
+  ]
+  name "yellow_bot"
+  boundingObject Group {
+    children [
+      Transform {
+        translation -0.05 0 0
+        children [
+          Box {
+            size 0.38 0.32 0.3
+          }
+        ]
+      }
+      Transform {
+        translation 0.25 0 0
+        children [
+          Box {
+            size 0.08 0.58 0.42
+          }
+        ]
+      }
+      Transform {
+        translation 0.42 0.32 0
+        children [
+          Box {
+            size 0.34 0.07 0.36
+          }
+        ]
+      }
+      Transform {
+        translation 0.42 -0.32 0
+        children [
+          Box {
+            size 0.34 0.07 0.36
+          }
+        ]
+      }
+    ]
+  }
+  physics Physics {
+    density -1
+    mass 55
+  }
+  controller "billiard_bot"
+  supervisor TRUE
+}
+DEF MAGENTA_BOT Robot {
+  translation 1.9 -1.87 0.34
+  rotation 0 0 1 3.14159
+  children [
+    Transform {
+      translation -0.05 0 0
+      children [
+        Shape {
+          appearance USE SmallBotBody
+          geometry Box {
+            size 0.38 0.32 0.3
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0.25 0 0
+      children [
+        Shape {
+          appearance USE SmallBotBumper
+          geometry Box {
+            size 0.08 0.58 0.42
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0.42 0.32 0
+      children [
+        Shape {
+          appearance USE SmallBotBumper
+          geometry Box {
+            size 0.34 0.07 0.36
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0.42 -0.32 0
+      children [
+        Shape {
+          appearance USE SmallBotBumper
+          geometry Box {
+            size 0.34 0.07 0.36
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0 0 0.24
+      children [
+        Shape {
+          appearance DEF MagentaBeacon PBRAppearance {
+            baseColor 1 0 1
+            roughness 0.4
+            metalness 0
+          }
+          geometry Box {
+            size 0.16 0.16 0.08
+          }
+        }
+      ]
+    }
+  ]
+  name "magenta_bot"
+  boundingObject Group {
+    children [
+      Transform {
+        translation -0.05 0 0
+        children [
+          Box {
+            size 0.38 0.32 0.3
+          }
+        ]
+      }
+      Transform {
+        translation 0.25 0 0
+        children [
+          Box {
+            size 0.08 0.58 0.42
+          }
+        ]
+      }
+      Transform {
+        translation 0.42 0.32 0
+        children [
+          Box {
+            size 0.34 0.07 0.36
+          }
+        ]
+      }
+      Transform {
+        translation 0.42 -0.32 0
+        children [
+          Box {
+            size 0.34 0.07 0.36
+          }
+        ]
+      }
+    ]
+  }
+  physics Physics {
+    density -1
+    mass 55
+  }
+  controller "billiard_bot"
+  supervisor TRUE
+}
+DEF YELLOW_BALL Ball {
+  translation -5.05 4.2539e-09 0.47491
+  rotation -0.9999999999999999 0 0 4.6698143671502424e-15
+  name "yellow ball"
+  color 1 1 0
+  radius 0.375
+}
+DEF PURPLE_BALL Ball {
+  translation -3.93 3.55 0.47491
+  rotation -0.9999999999999999 0 0 4.6698143671502424e-15
+  name "purple poison ball"
+  color 0.5 0 1
+  radius 0.375
+}
+DEF MAGENTA_BALL Ball {
+  translation -2.63 0.55 0.47491
+  rotation -0.9999999999999999 0 0 4.6698143671502424e-15
+  name "magenta ball"
+  color 1 0 1
+  radius 0.375
+}
+DEF CYAN_BALL Ball {
+  translation -0.48 3.24 0.47491
+  rotation -0.9999999999999999 0 0 4.6698143671502424e-15
+  name "cyan ball"
+  color 0 1 1
+  radius 0.375
+}
