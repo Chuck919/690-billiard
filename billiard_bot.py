@@ -628,7 +628,7 @@ def stage_candidates(ball, direction):
     base = add(ball, scale(direction, -APPROACH_OFFSET))
     normal = perp(direction)
     candidates = []
-    for lateral in (0.0, 0.28, -0.28, 0.56, -0.56, 0.84, -0.84, 1.12, -1.12):
+    for lateral in (0.0, 0.28, -0.28, 0.56, -0.56, 0.84, -0.84, 1.12, -1.12, 1.5, -1.5, 2.0, -2.0):
         point = clamp_point(add(base, scale(normal, lateral)), margin=0.22)
         candidates.append((point, abs(lateral)))
     return candidates
@@ -651,8 +651,8 @@ def obstacle_cost(point):
         if ball_name == role["ball"] or in_any_pocket(ball_name):
             continue
         d = distance(point, ball_xy(ball_name))
-        if d < 1.25:
-            cost += (1.25 - d) * 8.0
+        if d < 1.5:
+            cost += (1.5 - d) * 18.0
 
     return cost
 
@@ -693,6 +693,37 @@ def clear_blocked_lane(blocker_name, blocker_position, direction):
     deadline = robot.getTime() + 0.65
     while robot.getTime() < deadline and step_once():
         drive_step(clear_goal, avoid=True, skip_ball=role["ball"], max_speed=1.0)
+    stop_robot(2)
+
+
+def nudge_blocking_ball(blocker_name, blocker_position, direction):
+    """Approach the side of a lane-blocking ball and push it out of the shot lane."""
+    normal = perp(direction)
+    mine = robot_xy()
+
+    # Push from whichever side of the lane the robot is already on
+    dot = (mine[0] - blocker_position[0]) * normal[0] + (mine[1] - blocker_position[1]) * normal[1]
+    push_side = 1.0 if dot >= 0.0 else -1.0
+
+    approach = clamp_point(
+        add(blocker_position, scale(normal, push_side * APPROACH_OFFSET)),
+        margin=0.22,
+    )
+    debug("NUDGE", f"{blocker_name} approach=({approach[0]:.2f},{approach[1]:.2f})", force=True)
+    drive_to(
+        approach, "NUDGE_APPR",
+        tolerance=0.32, timeout=5.0,
+        avoid=True, skip_ball=role["ball"], max_speed=2.0,
+    )
+
+    push_target = clamp_point(
+        add(blocker_position, scale(normal, -push_side * 1.4)),
+        margin=0.22,
+    )
+    debug("NUDGE_PUSH", f"target=({push_target[0]:.2f},{push_target[1]:.2f})", force=True)
+    deadline = robot.getTime() + 2.5
+    while robot.getTime() < deadline and step_once():
+        drive_step(push_target, avoid=False, skip_ball=role["ball"], max_speed=2.2)
     stop_robot(2)
 
 
@@ -758,10 +789,32 @@ def push_assigned_ball():
             blocker = hard_shot_lane_blocker(ball, aim)
 
             if robot_to_contact > PUSH_START_DISTANCE:
-                to_contact = unit_from_to(robot_xy(), contact)
                 yaw_error = wrap_angle(heading - robot_yaw())
-                set_vector_motion(to_contact, 2.0, 5.2 * yaw_error)
-                debug("REACQUIRE", f"contact={robot_to_contact:.2f} angle={angle_error:.2f}")
+
+                # Strategy C: ball escaped too far — break and replan from scratch
+                if robot_to_contact > 2.0:
+                    debug("TOO_FAR", "ball escaped, replanning", force=True)
+                    break
+
+                # Strategy A: robot drifted in front of ball (between ball and pocket)
+                # — pushing from here would send the ball the wrong way
+                ball_to_robot = unit_from_to(ball, robot_xy())
+                on_wrong_side = (
+                    ball_to_robot[0] * direction[0] + ball_to_robot[1] * direction[1] > 0.3
+                )
+                if on_wrong_side:
+                    debug("WRONG_SIDE", "robot in front of ball, replanning", force=True)
+                    break
+
+                # Strategy B: rotate in place when badly misaligned before translating,
+                # preventing the robot from crabbing sideways into the ball
+                if abs(yaw_error) > 0.7:
+                    set_motion(0.0, clamp(5.2 * yaw_error, -MAX_TURN, MAX_TURN))
+                    debug("REALIGN", f"angle={abs(yaw_error):.2f}")
+                else:
+                    to_contact = unit_from_to(robot_xy(), contact)
+                    set_vector_motion(to_contact, 2.0, 5.2 * yaw_error)
+                    debug("REACQUIRE", f"contact={robot_to_contact:.2f} angle={angle_error:.2f}")
             elif angle_error > 0.42:
                 error = wrap_angle(heading - robot_yaw())
                 set_motion(0.0, clamp(5.8 * error, -MAX_TURN, MAX_TURN))
@@ -771,8 +824,12 @@ def push_assigned_ball():
                 debug("LANE_BLOCKED", f"{name} clearance={clearance:.2f} along={along:.2f}", force=True)
                 if name in BOT_DEFS:
                     yield_to_peer(name)
-                else:
+                elif name == "purple":
+                    # Never push purple — just move the robot out of the way
                     clear_blocked_lane(name, position, direction)
+                else:
+                    # Strategy F: physically nudge the blocking ball sideways
+                    nudge_blocking_ball(name, position, direction)
                 break
             else:
                 yaw_error = wrap_angle(heading - robot_yaw())
